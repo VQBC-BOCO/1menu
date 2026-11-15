@@ -184,11 +184,11 @@
     <div class="category-column">
       <div class="card">
         <div class="item-header">
-          <span class="item-name">Dad Joke Lager</span>
-          <span class="item-abv">5.5% ABV</span>
+          <span class="item-name">Root Beer</span>
+          <span class="item-abv">0% ABV</span>
         </div>
-        <div class="item-desc">American Lager brewed with Mountain Malt barley, flaked corn and rice, fermented cold.</div>
-        <div class="item-pricing"><span>4oz: $4 |</span><span>12oz: $7 |</span><span>16oz: $8</span></div>
+        <div class="item-desc"></div>
+        <div class="item-pricing"><span>4</span><span>12oz: $7 |</span><span></span></div>
       </div>
 
       <div class="card">
@@ -238,11 +238,11 @@
 
       <div class="card">
         <div class="item-header">
-          <span class="item-name">Patients' Pleas Hazy IPA</span>
-          <span class="item-abv">7.4% ABV</span>
+          <span class="item-name">That's a Juicy DIPA</span>
+          <span class="item-abv">9% ABV</span>
         </div>
-        <div class="item-desc">Mostly Mosaic Hops. Hang in There Hazy IPA’s twin cousin.</div>
-        <div class="item-pricing"><span>4oz: $5 |</span><span>12oz: $8 |</span><span>16oz: $9</span></div>
+        <div class="item-desc">Double Hang - Citra & Azacca.</div>
+        <div class="item-pricing"><span>4oz: $5 |</span><span>12oz: $9 |</span><span>16oz: $10</span></div>
       </div>
     </div>
 
@@ -403,5 +403,35 @@
 
     requestAnimationFrame(animate);
   </script>
+  <script>
+  let currentHash = null;
+
+  async function checkForUpdates() {
+    try {
+      // Fetch the page with a timestamp to bypass Chromium's local cache
+      const response = await fetch(window.location.href.split('?')[0] + '?t=' + Date.now(), {
+        cache: 'no-store'
+      });
+      const text = await response.text();
+      
+      // On first load, store the current HTML snapshot
+      if (currentHash === null) {
+        currentHash = text;
+        return;
+      }
+
+      // If the GitHub file changed, reload the screen cleanly
+      if (text !== currentHash) {
+        window.location.reload(true);
+      }
+    } catch (e) {
+      // Silently ignore network hiccups and try again next cycle
+    }
+  }
+
+  // Check every 60 seconds
+  setInterval(checkForUpdates, 60000);
+  checkForUpdates();
+</script>
 </body>
 </html>
