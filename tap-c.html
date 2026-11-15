@@ -130,9 +130,10 @@
 
       showStatus("Loading current menu from GitHub...");
       try {
-        const res = await fetch(`https://api.github.com/repos/${vqbc-boco}/${1menu}/contents/${PATH}?t=${Date.now()}`, {
+        const url = "https://api.github.com/repos/" + OWNER + "/" + REPO + "/contents/" + PATH + "?t=" + Date.now();
+        const res = await fetch(url, {
           headers: {
-            "Authorization": `Bearer ${token}`,
+            "Authorization": "Bearer " + token,
             "Accept": "application/vnd.github+json"
           }
         });
@@ -140,8 +141,7 @@
         const json = await res.json();
         fileSha = json.sha;
         
-        // Decode UTF-8 base64 safely
-        const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
+        const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ""))));
         menuData = JSON.parse(decoded);
 
         document.getElementById('editorArea').style.display = 'block';
@@ -160,31 +160,31 @@
 
     function renderSide(side, containerId) {
       const container = document.getElementById(containerId);
-      container.innerHTML = menuData[side].map((item, idx) => `
-        <div class="box">
-          <div class="card-controls">
-            <div>
-              <button class="btn btn-move" onclick="moveItem('${side}', ${idx}, -1)">↑</button>
-              <button class="btn btn-move" onclick="moveItem('${side}', ${idx}, 1)">↓</button>
-            </div>
-            <button class="btn btn-del" onclick="deleteItem('${side}', ${idx})">Remove</button>
-          </div>
-          <div class="row">
-            <div>
-              <label>Beer / Drink Name</label>
-              <input type="text" value="${escapeHtml(item.name)}" onchange="updateField('${side}', ${idx}, 'name', this.value)">
-            </div>
-            <div>
-              <label>ABV</label>
-              <input type="text" value="${escapeHtml(item.abv)}" onchange="updateField('${side}', ${idx}, 'abv', this.value)">
-            </div>
-          </div>
-          <label>Description (optional)</label>
-          <input type="text" value="${escapeHtml(item.desc)}" onchange="updateField('${side}', ${idx}, 'desc', this.value)">
-          <label>Prices (comma separated, e.g.: 4oz: $4, 12oz: $7, 16oz: $8)</label>
-          <input type="text" value="${escapeHtml((item.prices || []).join(', '))}" onchange="updatePrices('${side}', ${idx}, this.value)">
-        </div>
-      `).join('');
+      container.innerHTML = menuData[side].map(function(item, idx) {
+        return '<div class="box">' +
+          '<div class="card-controls">' +
+            '<div>' +
+              '<button class="btn btn-move" onclick="moveItem(\'' + side + '\', ' + idx + ', -1)">↑</button>' +
+              '<button class="btn btn-move" onclick="moveItem(\'' + side + '\', ' + idx + ', 1)">↓</button>' +
+            '</div>' +
+            '<button class="btn btn-del" onclick="deleteItem(\'' + side + '\', ' + idx + ')">Remove</button>' +
+          '</div>' +
+          '<div class="row">' +
+            '<div>' +
+              '<label>Beer / Drink Name</label>' +
+              '<input type="text" value="' + escapeHtml(item.name) + '" onchange="updateField(\'' + side + '\', ' + idx + ', \'name\', this.value)">' +
+            '</div>' +
+            '<div>' +
+              '<label>ABV</label>' +
+              '<input type="text" value="' + escapeHtml(item.abv) + '" onchange="updateField(\'' + side + '\', ' + idx + ', \'abv\', this.value)">' +
+            '</div>' +
+          '</div>' +
+          '<label>Description (optional)</label>' +
+          '<input type="text" value="' + escapeHtml(item.desc) + '" onchange="updateField(\'' + side + '\', ' + idx + ', \'desc\', this.value)">' +
+          '<label>Prices (comma separated)</label>' +
+          '<input type="text" value="' + escapeHtml((item.prices || []).join(', ')) + '" onchange="updatePrices(\'' + side + '\', ' + idx + ', this.value)">' +
+        '</div>';
+      }).join('');
     }
 
     function escapeHtml(str) {
@@ -196,7 +196,7 @@
     }
 
     function updatePrices(side, idx, val) {
-      menuData[side][idx].prices = val.split(',').map(s => s.trim()).filter(Boolean);
+      menuData[side][idx].prices = val.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
     }
 
     function addItem(side) {
@@ -232,10 +232,11 @@
         const contentStr = JSON.stringify(menuData, null, 2);
         const encoded = btoa(unescape(encodeURIComponent(contentStr)));
 
-        const res = await fetch(`https://api.github.com/repos/${vqbc-boco}/${1menu}/contents/${PATH}`, {
+        const url = "https://api.github.com/repos/" + OWNER + "/" + REPO + "/contents/" + PATH;
+        const res = await fetch(url, {
           method: "PUT",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            "Authorization": "Bearer " + token,
             "Accept": "application/vnd.github+json",
             "Content-Type": "application/json"
           },
