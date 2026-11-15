@@ -1,0 +1,91 @@
+{
+  "subtitle": "Weekly Turntable Tues @7 | Open Mic Weds @6 | Monthly Noise Last Monday @8 | Remember beer to-go | More Art @madkingart.com",
+  "left": [
+    {
+      "name": "Root Beer",
+      "abv": "0% ABV",
+      "desc": "",
+      "prices": ["12oz: $7"]
+    },
+    {
+      "name": "Father Figure Vienna Lager",
+      "abv": "4.6% ABV",
+      "desc": "Light, amber hued lager w/ a malty, bread crust backbone and balanced hop profile.",
+      "prices": ["4oz: $4", "12oz: $7", "16oz: $8"]
+    },
+    {
+      "name": "CRAFtea Wit",
+      "abv": "5.2% ABV",
+      "desc": "Belgian style Witbier brewed with Earl Grey Tea.",
+      "prices": ["4oz: $4", "12oz: $7", "16oz: $8"]
+    },
+    {
+      "name": "Not My Lover Belgian Pale",
+      "abv": "5.2% ABV",
+      "desc": "Soft malt character and floral hop notes. Belgian yeast and local malt.",
+      "prices": ["4oz: $4", "12oz: $7", "16oz: $8"]
+    },
+    {
+      "name": "Boombox Pale Ale",
+      "abv": "6.0% ABV",
+      "desc": "West Coast Pale with Idaho 7, Cascade w/ Citra dry hop.",
+      "prices": ["4oz: $5", "12oz: $8", "16oz: $9"]
+    },
+    {
+      "name": "Headier Than Thou Hazy IPA",
+      "abv": "6.0% ABV",
+      "desc": "Hazy IPA w/ Mosaic and Strata hops.",
+      "prices": ["4oz: $4", "12oz: $8", "16oz: $9"]
+    },
+    {
+      "name": "That's a Juicy DIPA",
+      "abv": "9% ABV",
+      "desc": "Double Hang - Citra & Azacca.",
+      "prices": ["4oz: $5", "12oz: $9", "16oz: $10"]
+    }
+  ],
+  "right": [
+    {
+      "name": "Candy Griper Double IPA",
+      "abv": "8.2% ABV",
+      "desc": "Punchy and warming western double IPA w/ Chinook & Simcoe hops featuring El Dorado hop hash dry hop!",
+      "prices": ["4oz: $5", "12oz: $9"]
+    },
+    {
+      "name": "Sunless Skies Cascadian Dark Ale",
+      "abv": "5.4% ABV",
+      "desc": "Roasty malt character w/ citrussy and piney hop qualities make this an absolute crusher!",
+      "prices": ["4oz: $5", "12oz: $8", "16oz: $9"]
+    },
+    {
+      "name": "Famine Wolf Stout",
+      "abv": "4.2% ABV",
+      "desc": "Maris Otter, Chocolate malt, Roasted Barley, Flaked Oats. Fuggle hops. Simple. Subtle. Stout.",
+      "prices": ["4oz: $5", "12oz: $8", "16oz: $9"]
+    },
+    {
+      "name": "Gnarlyquin Romance",
+      "abv": "7.9% ABV",
+      "desc": "Stout with chocolate and figs.",
+      "prices": ["4oz: $5", "12oz: $9", "16oz: $10"]
+    },
+    {
+      "name": "The Magical Liopleurodon Porter",
+      "abv": "7.0% ABV",
+      "desc": "Porter with Coffee, Cinnamon, and Fire-roasted Chili Peppers. Gluten Reduced.",
+      "prices": ["4oz: $5", "12oz: $9", "16oz: $10"]
+    },
+    {
+      "name": "Exasberryated Worm Farm",
+      "abv": "7.5% ABV",
+      "desc": "Pastry sour with blueberry, blackberry, black currant, vanilla and lactose.",
+      "prices": ["4oz: $5", "12oz: $9", "16oz: $10"]
+    },
+    {
+      "name": "Hop Tea",
+      "abv": "0.0% ABV",
+      "desc": "Green Tea, Citra Hops and Carbonated Water.",
+      "prices": ["On Tap Now"]
+    }
+  ]
+}
