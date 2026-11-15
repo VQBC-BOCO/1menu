@@ -5,38 +5,54 @@
   <title>Vision Quest Brewery Menu</title>
   <style>
     :root {
-      --bg: #07090f;
-      --panel-bg: linear-gradient(135deg, rgba(22, 27, 34, 0.9) 0%, rgba(13, 17, 23, 0.9) 100%);
-      --neon-cyan: #00f3ff;
-      --neon-magenta: #ff0055;
-      --price-green: #39ff14;
-      --text-main: #f0f4f8;
-      --text-muted: #919eab;
+      --bg: #151c16;           /* Deep 90s Pine */
+      --panel-bg: #211d18;     /* Warm Espresso Bark */
+      --border-main: #6c7a64;  /* Sage Olive */
+      --terracotta: #de6e4b;   /* 90s Clay / Rust */
+      --ochre: #eab454;        /* Retro Mustard / Gold */
+      --sage: #a7c4a0;         /* Muted Trail Green */
+      --bone: #f4ece1;         /* Warm Off-White */
+      --muted: #b8b0a2;        /* Stone Gray */
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      text-shadow: none !important;
+      box-shadow: none !important;
+    }
 
     body {
       background-color: var(--bg);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-      padding: 24px 32px;
+      /* Subtle 90s pixel dithering grid */
+      background-image: 
+        linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
+        linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.02) 75%), 
+        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%);
+      background-size: 8px 8px;
+      color: var(--bone);
+      font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace;
+      padding: 20px 28px;
       height: 100vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       position: relative;
+      image-rendering: pixelated;
     }
 
-    /* Circuitry Background Canvas */
-    #circuitCanvas {
+    /* Pixelated Mountain Range Background */
+    #mountainBg {
       position: absolute;
-      top: 0;
+      bottom: 0;
       left: 0;
       width: 100vw;
-      height: 100vh;
-      pointer-events: none;
+      height: 38vh;
       z-index: 0;
+      pointer-events: none;
+      opacity: 0.35;
     }
 
     header, .grid {
@@ -46,137 +62,139 @@
 
     header {
       display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+      border: 4px solid var(--border-main);
+      background: var(--panel-bg);
+      padding: 10px 18px;
+    }
+
+    .header-top {
+      display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 16px;
-      border-bottom: 2px solid;
-      border-image: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta)) 1;
-      padding-bottom: 10px;
-      background: rgba(7, 9, 15, 0.8);
-      backdrop-filter: blur(4px);
+      align-items: center;
     }
 
     .brand-title {
-      font-size: 2.5rem;
+      font-size: 2.7rem;
       font-weight: 900;
       letter-spacing: 3px;
       text-transform: uppercase;
-      background: linear-gradient(180deg, #ffffff 0%, #c9d1d9 50%, #484f58 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.25));
+      color: var(--ochre);
+    }
+
+    .mountain-glyphs {
+      font-size: 1.8rem;
+      color: var(--terracotta);
+      letter-spacing: 6px;
+      user-select: none;
     }
 
     .brand-subtitle {
-      font-size: 0.85rem;
-      color: var(--neon-cyan);
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      font-size: 1.05rem;
+      color: var(--sage);
+      letter-spacing: 1px;
       font-weight: 700;
-      text-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+      border-top: 2px dashed var(--border-main);
+      padding-top: 6px;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: 14px;
       flex-grow: 1;
     }
 
     .category-column {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
       justify-content: space-between;
       height: 100%;
     }
 
     .card {
       background: var(--panel-bg);
-      border: 1px solid rgba(48, 54, 61, 0.85);
-      border-radius: 6px;
-      padding: 10px 16px;
-      position: relative;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(6px);
+      border: 3px solid var(--border-main);
+      padding: 8px 14px;
       flex-grow: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      transition: border-color 0.3s ease;
-    }
-
-    .card:hover {
-      border-color: rgba(0, 243, 255, 0.4);
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      border-radius: 6px;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 40%, rgba(0, 243, 255, 0.15));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
     }
 
     .item-header {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 2px;
+      align-items: center;
+      margin-bottom: 3px;
+      gap: 8px;
     }
 
     .item-name {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: 0.5px;
+      font-size: 1.48rem;
+      font-weight: 900;
+      color: var(--bone);
+      letter-spacing: -0.5px;
+      line-height: 1.05;
+    }
+
+    .item-name::before {
+      content: "▲ ";
+      color: var(--terracotta);
+      font-size: 1.1rem;
     }
 
     .item-abv {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--neon-cyan);
-      background: rgba(0, 243, 255, 0.08);
-      border: 1px solid rgba(0, 243, 255, 0.25);
-      padding: 2px 6px;
-      border-radius: 3px;
-      letter-spacing: 0.5px;
+      font-size: 1.08rem;
+      font-weight: 900;
+      color: var(--bg);
+      background: var(--ochre);
+      padding: 2px 7px;
       white-space: nowrap;
     }
 
     .item-desc {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      line-height: 1.2;
+      font-size: 1.02rem;
+      color: var(--muted);
+      line-height: 1.15;
       margin-bottom: 4px;
+      font-weight: 600;
     }
 
     .item-pricing {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--price-green);
-      letter-spacing: 0.5px;
-      border-top: 1px dotted rgba(255, 255, 255, 0.12);
-      padding-top: 4px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--sage);
+      border-top: 2px dotted rgba(167, 196, 160, 0.35);
+      padding-top: 3px;
       display: flex;
-      gap: 16px;
+      gap: 10px;
     }
   </style>
 </head>
 <body>
 
-  <canvas id="circuitCanvas"></canvas>
+  <!-- Crisp Pixelated Mountain Range SVG -->
+  <svg id="mountainBg" viewBox="0 0 320 100" preserveAspectRatio="none" shape-rendering="crispEdges">
+    <!-- Distant Sage Ridge -->
+    <polygon fill="#2b3a2c" points="0,100 0,65 25,65 25,50 45,50 45,35 65,35 65,20 85,20 85,35 105,35 105,55 130,55 130,40 155,40 155,25 175,25 175,15 195,15 195,30 220,30 220,45 250,45 250,30 275,30 275,45 300,45 300,60 320,60 320,100" />
+    <!-- Foreground Terracotta/Bark Ridge -->
+    <polygon fill="#3a2920" points="0,100 0,80 35,80 35,65 60,65 60,50 90,50 90,65 115,65 115,75 145,75 145,55 180,55 180,45 205,45 205,60 235,60 235,70 265,70 265,55 290,55 290,70 320,70 320,100" />
+    <!-- Pixel Snow/Ochre Caps -->
+    <rect fill="#eab454" x="65" y="20" width="20" height="5" />
+    <rect fill="#eab454" x="175" y="15" width="20" height="5" />
+    <rect fill="#de6e4b" x="180" y="45" width="25" height="5" />
+  </svg>
 
   <header>
-    <div>
-      <div class="brand-subtitle">Weekly Turntable Tues @7 | Open Mic Weds @6 | Monthly Noise Last Monday @8 | Remember beer to-go | More Art @madkingart.com</div>
+    <div class="header-top">
       <div class="brand-title">Vision Quest Brewery</div>
+      <div class="mountain-glyphs">▲▲▲</div>
     </div>
+    <div class="brand-subtitle">Weekly Turntable Tues @7 | Open Mic Weds @6 | Monthly Noise Last Monday @8 | Remember beer to-go | More Art @madkingart.com</div>
   </header>
 
   <div class="grid">
@@ -187,8 +205,7 @@
           <span class="item-name">Root Beer</span>
           <span class="item-abv">0% ABV</span>
         </div>
-        <div class="item-desc"></div>
-        <div class="item-pricing"><span></span><span>12oz: $7 |</span><span></span></div>
+        <div class="item-pricing"><span>12oz: $7</span></div>
       </div>
 
       <div class="card">
@@ -314,124 +331,30 @@
   </div>
 
   <script>
-    const canvas = document.getElementById('circuitCanvas');
-    const ctx = canvas.getContext('2d');
+    let currentHash = null;
 
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    const gridSize = 40;
-    const paths = [];
-
-    function initPaths() {
-      paths.length = 0;
-      const cols = Math.floor(canvas.width / gridSize);
-      const rows = Math.floor(canvas.height / gridSize);
-
-      for (let i = 0; i < 18; i++) {
-        let current = {
-          x: Math.floor(Math.random() * cols) * gridSize,
-          y: Math.floor(Math.random() * rows) * gridSize
-        };
-        const segments = [{...current}];
-        const length = 5 + Math.floor(Math.random() * 6);
-
-        for (let j = 0; j < length; j++) {
-          const axis = Math.random() > 0.5 ? 'x' : 'y';
-          const step = (Math.random() > 0.5 ? 1 : -1) * gridSize * (1 + Math.floor(Math.random() * 2));
-          current[axis] += step;
-          
-          current.x = Math.max(0, Math.min(canvas.width, current.x));
-          current.y = Math.max(0, Math.min(canvas.height, current.y));
-          
-          segments.push({...current});
+    async function checkForUpdates() {
+      try {
+        const response = await fetch(window.location.href.split('?')[0] + '?t=' + Date.now(), {
+          cache: 'no-store'
+        });
+        const text = await response.text();
+        
+        if (currentHash === null) {
+          currentHash = text;
+          return;
         }
 
-        paths.push({
-          segments: segments,
-          pulseProgress: Math.random(),
-          speed: 0.002 + Math.random() * 0.003
-        });
+        if (text !== currentHash) {
+          window.location.reload(true);
+        }
+      } catch (e) {
+        // Silently ignore network hiccups and try again next cycle
       }
     }
 
-    initPaths();
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      paths.forEach(p => {
-        ctx.strokeStyle = 'rgba(0, 243, 255, 0.04)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        p.segments.forEach((seg, idx) => {
-          if (idx === 0) ctx.moveTo(seg.x, seg.y);
-          else ctx.lineTo(seg.x, seg.y);
-        });
-        ctx.stroke();
-
-        p.pulseProgress += p.speed;
-        if (p.pulseProgress > 1) p.pulseProgress = 0;
-
-        const totalSegments = p.segments.length - 1;
-        const targetFloat = p.pulseProgress * totalSegments;
-        const segIdx = Math.floor(targetFloat);
-        const segProgress = targetFloat - segIdx;
-
-        if (segIdx < totalSegments) {
-          const start = p.segments[segIdx];
-          const end = p.segments[segIdx + 1];
-          const px = start.x + (end.x - start.x) * segProgress;
-          const py = start.y + (end.y - start.y) * segProgress;
-
-          ctx.fillStyle = 'rgba(0, 243, 255, 0.6)';
-          ctx.shadowColor = '#00f3ff';
-          ctx.shadowBlur = 8;
-          ctx.beginPath();
-          ctx.arc(px, py, 2.5, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-      });
-
-      requestAnimationFrame(animate);
-    }
-
-    requestAnimationFrame(animate);
+    setInterval(checkForUpdates, 60000);
+    checkForUpdates();
   </script>
-  <script>
-  let currentHash = null;
-
-  async function checkForUpdates() {
-    try {
-      // Fetch the page with a timestamp to bypass Chromium's local cache
-      const response = await fetch(window.location.href.split('?')[0] + '?t=' + Date.now(), {
-        cache: 'no-store'
-      });
-      const text = await response.text();
-      
-      // On first load, store the current HTML snapshot
-      if (currentHash === null) {
-        currentHash = text;
-        return;
-      }
-
-      // If the GitHub file changed, reload the screen cleanly
-      if (text !== currentHash) {
-        window.location.reload(true);
-      }
-    } catch (e) {
-      // Silently ignore network hiccups and try again next cycle
-    }
-  }
-
-  // Check every 60 seconds
-  setInterval(checkForUpdates, 60000);
-  checkForUpdates();
-</script>
 </body>
 </html>
