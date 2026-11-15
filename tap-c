@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision Quest Taproom Editor</title>
+  <style>
+    :root {
+      --bg: #151c16;
+      --panel: #211d18;
+      --border: #6c7a64;
+      --ochre: #eab454;
+      --terracotta: #de6e4b;
+      --sage: #a7c4a0;
+      --bone: #f4ece1;
+    }
+    * { box-sizing: border-box; font-family: "Courier New", Courier, monospace; }
+    body {
+      background: var(--bg);
+      color: var(--bone);
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 { color: var(--ochre); margin-bottom: 16px; border-bottom: 3px solid var(--border); padding-bottom: 8px; }
+    h2 { color: var(--sage); margin: 24px 0 12px; }
+    .box {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    label { display: block; font-size: 0.85rem; color: var(--sage); margin-bottom: 4px; font-weight: bold; }
+    input, textarea {
+      width: 100%;
+      background: #121613;
+      border: 2px solid var(--border);
+      color: var(--bone);
+      padding: 8px;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+    .row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+    .btn {
+      background: var(--ochre);
+      color: #151c16;
+      border: none;
+      padding: 10px 16px;
+      font-weight: 900;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .btn-add { background: var(--sage); margin-top: 6px; }
+    .btn-del { background: var(--terracotta); color: #fff; padding: 6px 10px; font-size: 0.85rem; }
+    .btn-move { background: #3b4438; color: var(--bone); padding: 6px 10px; font-size: 0.85rem; }
+    .card-controls { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    #status {
+      padding: 12px;
+      margin-bottom: 16px;
+      font-weight: bold;
+      display: none;
+      border: 2px solid var(--ochre);
+      background: var(--panel);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>▲ Vision Quest Menu Editor</h1>
+
+  <div class="box" id="authBox">
+    <label>Staff Access Key (GitHub Token — Saved on this device)</label>
+    <div style="display:flex; gap:10px;">
+      <input type="password" id="tokenInput" placeholder="github_pat_...">
+      <button class="btn" onclick="saveToken()">Unlock</button>
+    </div>
+  </div>
+
+  <div id="status"></div>
+
+  <div id="editorArea" style="display:none;">
+    <div class="box">
+      <label>Top Ticker / Announcements</label>
+      <input type="text" id="subtitleInput">
+    </div>
+
+    <h2>Left Column (7 Max Recommended)</h2>
+    <div id="leftList"></div>
+    <button class="btn btn-add" onclick="addItem('left')">+ Add Left Column Item</button>
+
+    <h2>Right Column (7 Max Recommended)</h2>
+    <div id="rightList"></div>
+    <button class="btn btn-add" onclick="addItem('right')">+ Add Right Column Item</button>
+
+    <div style="margin-top: 30px; position: sticky; bottom: 16px;">
+      <button class="btn" style="width:100%; padding:16px; font-size:1.2rem; border:3px solid #151c16;" onclick="publishMenu()">
+        ▲ SAVE & PUBLISH TO TV SCREEN
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // === SET YOUR GITHUB DETAILS HERE ===
+    const OWNER = "VQBC-BOCO";
+    const REPO  = "1MENU";
+    const PATH  = "menu.json";
+    // ====================================
+
+    let menuData = { subtitle: "", left: [], right: [] };
+    let fileSha = "";
+
+    function showStatus(msg, isError = false) {
+      const el = document.getElementById('status');
+      el.style.display = 'block';
+      el.style.borderColor = isError ? '#de6e4b' : '#eab454';
+      el.textContent = msg;
+    }
+
+    function saveToken() {
+      const val = document.getElementById('tokenInput').value.trim();
+      if (!val) return;
+      localStorage.setItem('vq_gh_token', val);
+      initEditor();
+    }
+
+    async function initEditor() {
+      const token = localStorage.getItem('vq_gh_token');
+      if (!token) return;
+      document.getElementById('tokenInput').value = token;
+
+      showStatus("Loading current menu from GitHub...");
+      try {
+        const res = await fetch(`https://api.github.com/repos/${vqbc-boco}/${1menu}/contents/${PATH}?t=${Date.now()}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/vnd.github+json"
+          }
+        });
+        if (!res.ok) throw new Error("Invalid Access Key or Repo settings.");
+        const json = await res.json();
+        fileSha = json.sha;
+        
+        // Decode UTF-8 base64 safely
+        const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
+        menuData = JSON.parse(decoded);
+
+        document.getElementById('editorArea').style.display = 'block';
+        document.getElementById('status').style.display = 'none';
+        renderForm();
+      } catch (err) {
+        showStatus("Error: " + err.message, true);
+      }
+    }
+
+    function renderForm() {
+      document.getElementById('subtitleInput').value = menuData.subtitle || "";
+      renderSide('left', 'leftList');
+      renderSide('right', 'rightList');
+    }
+
+    function renderSide(side, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = menuData[side].map((item, idx) => `
+        <div class="box">
+          <div class="card-controls">
+            <div>
+              <button class="btn btn-move" onclick="moveItem('${side}', ${idx}, -1)">↑</button>
+              <button class="btn btn-move" onclick="moveItem('${side}', ${idx}, 1)">↓</button>
+            </div>
+            <button class="btn btn-del" onclick="deleteItem('${side}', ${idx})">Remove</button>
+          </div>
+          <div class="row">
+            <div>
+              <label>Beer / Drink Name</label>
+              <input type="text" value="${escapeHtml(item.name)}" onchange="updateField('${side}', ${idx}, 'name', this.value)">
+            </div>
+            <div>
+              <label>ABV</label>
+              <input type="text" value="${escapeHtml(item.abv)}" onchange="updateField('${side}', ${idx}, 'abv', this.value)">
+            </div>
+          </div>
+          <label>Description (optional)</label>
+          <input type="text" value="${escapeHtml(item.desc)}" onchange="updateField('${side}', ${idx}, 'desc', this.value)">
+          <label>Prices (comma separated, e.g.: 4oz: $4, 12oz: $7, 16oz: $8)</label>
+          <input type="text" value="${escapeHtml((item.prices || []).join(', '))}" onchange="updatePrices('${side}', ${idx}, this.value)">
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/"/g, '&quot;');
+    }
+
+    function updateField(side, idx, field, val) {
+      menuData[side][idx][field] = val;
+    }
+
+    function updatePrices(side, idx, val) {
+      menuData[side][idx].prices = val.split(',').map(s => s.trim()).filter(Boolean);
+    }
+
+    function addItem(side) {
+      menuData[side].push({
+        name: "New Pour",
+        abv: "5.5% ABV",
+        desc: "",
+        prices: ["4oz: $4", "12oz: $7", "16oz: $8"]
+      });
+      renderForm();
+    }
+
+    function deleteItem(side, idx) {
+      menuData[side].splice(idx, 1);
+      renderForm();
+    }
+
+    function moveItem(side, idx, dir) {
+      const target = idx + dir;
+      if (target < 0 || target >= menuData[side].length) return;
+      const temp = menuData[side][idx];
+      menuData[side][idx] = menuData[side][target];
+      menuData[side][target] = temp;
+      renderForm();
+    }
+
+    async function publishMenu() {
+      const token = localStorage.getItem('vq_gh_token');
+      menuData.subtitle = document.getElementById('subtitleInput').value;
+
+      showStatus("Publishing to GitHub...");
+      try {
+        const contentStr = JSON.stringify(menuData, null, 2);
+        const encoded = btoa(unescape(encodeURIComponent(contentStr)));
+
+        const res = await fetch(`https://api.github.com/repos/${vqbc-boco}/${1menu}/contents/${PATH}`, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/vnd.github+json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: "Update taproom menu",
+            content: encoded,
+            sha: fileSha
+          })
+        });
+
+        if (!res.ok) throw new Error("Failed to save. Refresh page and try again.");
+        const result = await res.json();
+        fileSha = result.content.sha;
+        showStatus("▲ Saved! TV display will automatically update within ~1–2 minutes.");
+      } catch (err) {
+        showStatus("Error: " + err.message, true);
+      }
+    }
+
+    initEditor();
+  </script>
+</body>
+</html>
