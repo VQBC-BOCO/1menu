@@ -2,14 +2,6 @@
   "subtitle": "Weekly Turntable Tues @7 | Open Mic Weds @6 | Monthly Noise Last Monday @8 | Remember beer to-go | More Art @madkingart.com",
   "left": [
     {
-      "name": "Root Beer",
-      "abv": "0% ABV",
-      "desc": "",
-      "prices": [
-        "12oz: $7"
-      ]
-    },
-    {
       "name": "Father Figure Vienna Lager",
       "abv": "4.6% ABV",
       "desc": "Light, amber hued lager w/ a malty, bread crust backbone and balanced hop profile.",
@@ -37,6 +29,16 @@
         "4oz: $4",
         "12oz: $7",
         "16oz: $8"
+      ]
+    },
+    {
+      "name": "The Foggy Valley Belgian Dark Strong ale",
+      "abv": "8.4% ABV",
+      "desc": "Delicate yet full of flavor w/ notes of dark fruit, cake, and molasses",
+      "prices": [
+        "4oz: $4",
+        "12oz: $7",
+        "16oz: $9"
       ]
     },
     {
